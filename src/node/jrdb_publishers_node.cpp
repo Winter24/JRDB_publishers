@@ -6,7 +6,7 @@ using namespace cv;
 using namespace std::chrono_literals;
 
 JRDBPublishersNode::JRDBPublishersNode()
-: Node("jrdb_publisher_node"), file_index_(0)
+: Node("jrdb_publisher_node"), file_index_(000000)
 {
     publisher_point_cloud_upper_ = this->create_publisher<sensor_msgs::msg::PointCloud2>("jrdb/point_cloud/upper", 10);
     publisher_point_cloud_lower_ = this->create_publisher<sensor_msgs::msg::PointCloud2>("jrdb/point_cloud/lower", 10);
@@ -29,6 +29,8 @@ JRDBPublishersNode::JRDBPublishersNode()
 
 void JRDBPublishersNode::on_timer_callback()
 {
+    std::cout<<file_index_;
+
     sensor_msgs::msg::PointCloud2 point_cloud2_lower_msg;
     std::string pcl_pat_lower = path_point_cloud_lower_ + file_names_point_cloud_lower_[file_index_];
     convert_pcl_to_pointcloud2(point_cloud2_lower_msg, pcl_pat_lower);
@@ -67,7 +69,6 @@ void JRDBPublishersNode::on_timer_callback()
 
     RCLCPP_INFO(this->get_logger(), "Published %ith msg", file_index_);
 
-
     file_index_++;
 }
 
@@ -87,14 +88,14 @@ void JRDBPublishersNode::convert_pcl_to_pointcloud2(sensor_msgs::msg::PointCloud
 void JRDBPublishersNode::init_file_path()
 {
     std::string dataFolder = this->get_parameter("dataFolder").as_string();
-
-    path_point_cloud_upper_ = "data/train_dataset_with_activity/pointclouds/upper_velodyne/" + dataFolder + "/";
-    path_point_cloud_lower_ = "data/train_dataset_with_activity/pointclouds/lower_velodyne/" + dataFolder + "/";
-    path_image_left_ = "/home/ngin/pcl_detect_ws/data/train_dataset_with_activity/images/image_0/" + dataFolder + "/";
-    path_image_mid_left_ = "/home/ngin/pcl_detect_ws/data/train_dataset_with_activity/images/image_2/" + dataFolder + "/";
-    path_image_mid_ = "/home/ngin/pcl_detect_ws/data/train_dataset_with_activity/images/image_4/" + dataFolder + "/";
-    path_image_mid_right_ = "/home/ngin/pcl_detect_ws/data/train_dataset_with_activity/images/image_6/" + dataFolder + "/";
-    path_image_right_ = "/home/ngin/pcl_detect_ws/data/train_dataset_with_activity/images/image_8/" + dataFolder + "/";
+    
+    path_point_cloud_upper_ = "/media/winter24/LaCie/lidar-perception-master/data-3d/training_data_JRDB/pointclouds/upper_velodyne/bytes-cafe-2019-02-07_0/";
+    path_point_cloud_lower_ = "/media/winter24/LaCie/lidar-perception-master/data-3d/training_data_JRDB/pointclouds/lower_velodyne/bytes-cafe-2019-02-07_0/";
+    path_image_left_ = "/media/winter24/LaCie/lidar-perception-master/data-3d/training_data_JRDB/images/image_0/bytes-cafe-2019-02-07_0/";
+    path_image_mid_left_ = "/media/winter24/LaCie/lidar-perception-master/data-3d/training_data_JRDB/images/image_2/bytes-cafe-2019-02-07_0/";
+    path_image_mid_ = "/media/winter24/LaCie/lidar-perception-master/data-3d/training_data_JRDB/images/image_4/bytes-cafe-2019-02-07_0/";
+    path_image_mid_right_ = "/media/winter24/LaCie/lidar-perception-master/data-3d/training_data_JRDB/images/image_6/bytes-cafe-2019-02-07_0/";
+    path_image_right_ = "/media/winter24/LaCie/lidar-perception-master/data-3d/training_data_JRDB/images/image_8/bytes-cafe-2019-02-07_0/";
 }
 
 std::string JRDBPublishersNode::get_path(JRDBPublishersNode::PublisherType publisher_type)
@@ -193,6 +194,7 @@ void JRDBPublishersNode::convert_image_to_msg(sensor_msgs::msg::Image & msg, con
   if (frame.empty())                      // Check for invalid input
   {
     RCLCPP_ERROR(this->get_logger(), "Image does not exist. Check your files path!");
+    RCLCPP_ERROR(this->get_logger(), path);
     rclcpp::shutdown();
   }
 
