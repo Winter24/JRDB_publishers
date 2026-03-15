@@ -67,7 +67,7 @@ void JRDBPublishersNode::on_timer_callback()
     publisher_image_mid_right_->publish(std::move(image_message_mid_right));
     publisher_image_mid_->publish(std::move(image_message_mid));
 
-    RCLCPP_INFO(this->get_logger(), "Published %ith msg", file_index_);
+    RCLCPP_INFO(this->get_logger(), "Published %zuth msg", file_index_);
 
     file_index_++;
 }
@@ -100,7 +100,7 @@ void JRDBPublishersNode::init_file_path()
 
 std::string JRDBPublishersNode::get_path(JRDBPublishersNode::PublisherType publisher_type)
 {
-  RCLCPP_INFO(this->get_logger(), "get_path: '%i'", publisher_type);
+  RCLCPP_INFO(this->get_logger(), "get_path: '%i'", static_cast<int>(publisher_type));
   std::string path;
   if (publisher_type == JRDBPublishersNode::PublisherType::POINT_CLOUD_UPPER){
     path = path_point_cloud_upper_;
@@ -194,7 +194,7 @@ void JRDBPublishersNode::convert_image_to_msg(sensor_msgs::msg::Image & msg, con
   if (frame.empty())                      // Check for invalid input
   {
     RCLCPP_ERROR(this->get_logger(), "Image does not exist. Check your files path!");
-    RCLCPP_ERROR(this->get_logger(), path);
+    RCLCPP_ERROR(this->get_logger(), "Loi doc file: %s", path.c_str());
     rclcpp::shutdown();
   }
 
